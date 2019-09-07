@@ -1,0 +1,207 @@
+body {
+	font-family: Helvetica;
+	font-size: 18px;
+}
+
+#current-slide,
+#upcoming-slide,
+#slam-controls {
+	padding: 6px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+#current-slide iframe,
+#upcoming-slide iframe {
+	width: 100%;
+	height: 100%;
+	border: 1px solid #ddd;
+}
+
+#current-slide .label,
+#upcoming-slide .label {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 2;
+}
+
+.overlay-element {
+	height: 34px;
+	line-height: 34px;
+	padding: 0 10px;
+	text-shadow: none;
+	background: rgba( 220, 220, 220, 0.8 );
+	color: #222;
+	font-size: 14px;
+}
+
+.overlay-element.interactive:hover {
+	background: rgba( 220, 220, 220, 1 );
+}
+
+#current-slide {
+	position: absolute;
+	width: 60%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	padding-right: 0;
+}
+
+#upcoming-slide {
+	position: absolute;
+	width: 40%;
+	height: 40%;
+	right: 0;
+	top: 0;
+}
+
+/* Slam controls */
+#slam-controls {
+	position: absolute;
+	top: 40%;
+	right: 0;
+	width: 40%;
+	height: 60%;
+	overflow: auto;
+	font-size: 18px;
+}
+
+.slam-controls-artists {
+	padding: 10px 16px;
+}
+
+.slam-controls-artists .value {
+	margin-top: 5px;
+	line-height: 1.4;
+	font-size: 1.2em;
+}
+
+/* Layout/Round selector */
+#slam-dropdown-container {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: #222;
+	z-index: 10;
+}
+
+#slam-round {
+	margin-right: 10px;
+}
+
+tr.expandable {
+	display: none;
+}
+
+tr.expandable.expanded {
+	display: table-row;
+}
+
+.score-edit {
+	float: left;
+	width: 100%;
+	margin: 10px;
+}
+
+.score-edit:after {
+	content: "\A";
+	white-space: pre;
+}
+
+.score-edit-value {
+	border: solid 1px;
+	font-size: 1.6em;
+	width: 1.6em;
+	line-height: 1.6em;
+	margin-right: 10px;
+	padding-bottom: 2px;
+	float: left;
+	text-align: center;
+	cursor: pointer;
+}
+
+.score-edit-top .score-edit-value {
+	font-style: italic;
+	color: gray;
+	border-color: gray;
+	font-size: 1.2em;
+	margin-right: 5px;
+	padding-bottom: 2px;
+}
+
+.score-edit-value:hover {
+	background-color: lightblue;
+}
+
+.clear {
+	clear: both;
+}
+
+/* Slam layout: Wide */
+body[data-slam-layout="wide"] #current-slide,
+body[data-slam-layout="wide"] #upcoming-slide {
+	width: 50%;
+	height: 45%;
+	padding: 6px;
+}
+
+body[data-slam-layout="wide"] #current-slide {
+	top: 0;
+	left: 0;
+}
+
+body[data-slam-layout="wide"] #upcoming-slide {
+	top: 0;
+	left: 50%;
+}
+
+body[data-slam-layout="wide"] #slam-controls {
+	top: 45%;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	font-size: 1.25em;
+}
+
+/* Slam layout: Tall */
+body[data-slam-layout="tall"] #current-slide,
+body[data-slam-layout="tall"] #upcoming-slide {
+	width: 45%;
+	height: 50%;
+	padding: 6px;
+}
+
+body[data-slam-layout="tall"] #current-slide {
+	top: 0;
+	left: 0;
+}
+
+body[data-slam-layout="tall"] #upcoming-slide {
+	top: 50%;
+	left: 0;
+}
+
+body[data-slam-layout="tall"] #slam-controls {
+	top: 0;
+	left: 45%;
+	width: 55%;
+	height: 100%;
+	font-size: 1.25em;
+}
+
+/* Slam layout: Artists only */
+body[data-slam-layout="artists-only"] #current-slide,
+body[data-slam-layout="artists-only"] #upcoming-slide {
+	display: none;
+}
+
+body[data-slam-layout="artists-only"] #slam-controls {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	font-size: 1.25em;
+}
+

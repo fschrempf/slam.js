@@ -1,0 +1,22 @@
+{
+  "name": "slam.js",
+  "version": "1.0.0",
+  "description": "Kleinkunst Competition Interactive Slides with reveal.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Frieder Schrempf",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.3.1",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1",
+    "jquery-ui-dist": "^1.12.1",
+    "jsgrid": "git+https://github.com/fri-sch/jsgrid.git#b2c0d6fd39c3fa1999c9bddcab3dba3259972152",
+    "lowdb-api": "^1.0.3",
+    "mustache": "^3.0.3",
+    "socket.io": "^2.2.0"
+  }
+}
