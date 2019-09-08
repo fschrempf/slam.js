@@ -5,6 +5,7 @@ var io        = require('socket.io');
 var Mustache  = require('mustache');
 
 var path       = require('path');
+var fs         = require('fs');
 var bodyParser = require('body-parser');
 var lowdbApi   = require('lowdb-api');
 
@@ -12,36 +13,46 @@ var app   = express();
 var staticDir = express.static;
 var server    = http.createServer(app);
 
-var app_db   = express();
-var db_file = path.join(__dirname, './../db.json');
-var db_options = { prefix: "/slam/data" };
-
 var opts = {
 	port :      1947,
-	baseDir :   __dirname + '/../'
+	baseDir :   process.cwd() + '/'
 };
+
+var app_db   = express();
+var db_file = path.join(opts.baseDir, '/db.json');
+var db_options = { prefix: "/slam/data" };
 
 app.use('/slam/data', bodyParser.json());
 app.use('/slam/data', lowdbApi(db_file, db_options));
 
-app.use('/js', staticDir(__dirname + '/node_modules/jsgrid/dist'));
-app.use('/js', staticDir(__dirname + '/node_modules/bootstrap/dist/js'));
-app.use('/js', staticDir(__dirname + '/node_modules/jquery/dist'));
-app.use('/js', staticDir(__dirname + '/node_modules/jquery-ui-dist'));
-app.use('/css', staticDir(__dirname + '/node_modules/bootstrap/dist/css'));
-app.use('/css', staticDir(__dirname + '/node_modules/jsgrid/dist'));
-app.use('/css', staticDir(__dirname + '/node_modules/jquery-ui-dist'));
+/*
+ * Check if slam.js is installed as node module and all the frontend
+ * dependencies are in the base projects 'node_modules', or if it
+ * is pulled in from a subdirectory with its own 'node_modules'
+ */
+var dep_path = path.join(__dirname, 'node_modules/');
+if (fs.existsSync(dep_path)) {
+	console.log('Using dependencies from ' + dep_path);
+}
+else if (fs.existsSync(path.join(opts.baseDir, '/node_modules/'))) {
+	dep_path = path.join(opts.baseDir, '/node_modules/');
+	console.log('Using dependencies from ' + dep_path);
+}
 
-[ 'css', 'js', 'images', 'plugin', 'lib' ].forEach(function(dir) {
-	app.use('/' + dir, staticDir(opts.baseDir + dir));
+// Export the base projects assets
+[ 'css', 'js', 'images', 'lib' ].forEach(function(dir) {
+	app.use('/' + dir, staticDir(path.join(opts.baseDir, dir)));
 });
 
-[ 'css', 'js', 'plugin', 'lib' ].forEach(function(dir) {
-	app.use('/' + dir, staticDir(opts.baseDir + 'reveal.js/' + dir));
-});
-
-[ 'css', 'js', 'lib' ].forEach(function(dir) {
-	app.use('/' + dir, staticDir(opts.baseDir + 'slam.js/' + dir));
+// Export the lib assets
+[ 'css', 'js' ].forEach(function(dir) {
+	app.use('/' + dir, staticDir(path.join(dep_path, 'jsgrid/dist/')));
+	app.use('/' + dir, staticDir(path.join(dep_path, 'bootstrap/dist/', dir)));
+	app.use('/' + dir, staticDir(path.join(dep_path, 'jquery/dist')));
+	app.use('/' + dir, staticDir(path.join(dep_path, 'jquery-ui-dist')));
+	app.use('/' + dir, staticDir(path.join(dep_path, 'reveal.js/', dir)));
+	// Export the slam.js assets
+	app.use('/' + dir, staticDir(path.join(__dirname, dir)));
 });
 
 io = io(server);
@@ -68,11 +79,11 @@ io.on('connection', function(socket) {
 
 app.get('/', function(req, res) {
 	res.writeHead(200, {'Content-Type': 'text/html'});
-	fs.createReadStream(opts.baseDir + '/index.html').pipe(res);
+	fs.createReadStream(path.join(opts.baseDir, 'index.html')).pipe(res);
 });
 
 app.get('/slam/:socketId', function(req, res) {
-	fs.readFile(opts.baseDir + 'slam.js/control.html', function(err, data) {
+	fs.readFile(path.join(__dirname, 'control.html'), function(err, data) {
 		res.send(Mustache.to_html(data.toString(), {
 			socketId : req.params.socketId
 		}));
