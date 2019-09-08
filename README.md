@@ -32,64 +32,55 @@ ugly or perform bad. If you find issues please report them.
 If you want to start with a ready-to-go demo, you can follow these steps.
 
 1. Clone the demo repository.
-```
-git clone https://github.com/fri-sch/ps-es-2018-slides.git
-cd ps-es-2018-slides
-```
+
+       git clone https://github.com/fri-sch/ps-es-2018-slides.git
+       cd ps-es-2018-slides
 
 2. Install the dependencies.
-```
-npm install
-```
+
+       npm install
 
 3. Run the server.
-```
-node node_modules/slam.js
-```
+
+       node node_modules/slam.js
 
 ### Set up a new project
 
 1. Create a directory for your project.
-```
-mkdir slamjs-demo
-cd slamjs-demo
-```
+
+       mkdir slamjs-demo
+       cd slamjs-demo
 
 2. Install slam.js and its dependencies via npm.
-```
-npm install https://github.com/fri-sch/slam.js.git
-```
 
-  Or just clone the git repository to your project and install its dependencies.
-```
-git clone https://github.com/fri-sch/slam.js.git
-cd slam.js
-npm install
-cd ..
-```
+       npm install https://github.com/fri-sch/slam.js.git
+
+   Or just clone the git repository to your project and install its dependencies.
+
+       git clone https://github.com/fri-sch/slam.js.git
+       cd slam.js
+       npm install
+       cd ..
 
 3. Create your slides in `slamjs-demo/index.html`.
 
 4. Start the server by running node in the base directory of your project.
 
-  If you installed slam.js via npm:
-```
-node node_modules/slam.js
-```
+   If you installed slam.js via npm:
 
-  If you installed slam.js manually to a subdirectory called 'slam.js':
-```
-node slam.js
-```
+       node node_modules/slam.js
 
-  You should see something like the following. Follow the instructions.
-```
-slam.js - Kleinkunst Competition Interactive Slides
-1. Open the slides at http://localhost:1947
-2. The control page should open automatically in a separate window.
-   If not, click on the link in your JS console
-3. Enter your competition data live and go through the slides as needed
-```
+   If you installed slam.js manually to a subdirectory called 'slam.js':
+
+       node slam.js
+
+   You should see something like the following. Follow the instructions.
+
+       slam.js - Kleinkunst Competition Interactive Slides
+       1. Open the slides at http://localhost:1947
+       2. The control page should open automatically in a separate window.
+          If not, click on the link in your JS console
+       3. Enter your competition data live and go through the slides as needed
 
 ## Events
 
