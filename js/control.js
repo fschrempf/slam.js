@@ -70,7 +70,8 @@ handleStateMessage = debounce(handleStateMessage, 200);
  */
 function setupKeyboard() {
 	document.addEventListener('keydown', function(event) {
-		currentSlide.contentWindow.postMessage(JSON.stringify({ method: 'triggerKey', args: [ event.keyCode ] }), '*');
+		if (document.activeElement.type != "text")
+			currentSlide.contentWindow.postMessage(JSON.stringify({ method: 'triggerKey', args: [ event.keyCode ] }), '*');
 	} );
 }
 
@@ -343,7 +344,7 @@ var slotRoundGrid = $("#slotRoundGrid").jsGrid({
 						});
 						e.stopPropagation();
 					});
-				
+
 				return $result.add($customButton);
 			}
 		}
@@ -409,7 +410,7 @@ var slotArtistGrid = $("#slotArtistGrid").jsGrid({
 						});
 						e.stopPropagation();
 					});
-				
+
 				return $result.add($customButton);
 			}
 		}
