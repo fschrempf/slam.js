@@ -129,13 +129,16 @@ function slamlib_update(res, data, root) {
 				$(roundlist).find(".slot" + slot).html(a.name);
 				// Fill sub slides for each artist
 				let points = a["round" + r.id].points;
-				let score = a["round" + r.id].score;
+				let score = slamlib_getScore(a, r.id);
 				let slide = $(artistslides).find(".slot" + slot);
 				$(slide).find(".name").html(a.name);
 				$(slide).find(".score").html(score ? score:'');
 				$(slide).find(".points").html("");
 				for (let i=0; i<points.length; i++) {
-					$(slide).find(".points").append("<span>" +
+					let crossed = ">"
+					if (slamlib_isRatingCrossed(a, r.id, i))
+						crossed = " class='crossed'>";
+					$(slide).find(".points").append("<span" + crossed +
 														points[i] +
 													"</span>");
 				}
@@ -205,4 +208,56 @@ function isArtistInLevel(a, level) {
 	});
 
 	return inLevel;
+}
+
+function slamlib_getScore(a, r_id) {
+	if (!a["round" + r_id] || !a["round" + r_id].points)
+		return false;
+
+	let points = a["round" + r_id].points;
+	let score = 0;
+
+	for (let i=0; i<points.length; i++) {
+		if (!slamlib_isRatingCrossed(a, r_id, i))
+			score += points[i];
+	}
+
+	return score;
+}
+
+function slamlib_isRatingCrossed(a, r_id, r_idx) {
+	if (!a["round" + r_id] || !a["round" + r_id].points[r_idx])
+		return false;
+
+	if (!a["round" + r_id].crossed)
+		return false;
+
+	let points = a["round" + r_id].points;
+	let min = 11;
+	let max = -1;
+
+	for (let i=0; i<points.length; i++) {
+		if (points[i] < min)
+			min = points[i];
+		if (points[i] > max)
+			max = points[i];
+	}
+
+	let used = false;
+	for (let i=0; i<points.length; i++) {
+		if (points[i] === min && i !== r_idx)
+			used = true;
+		else if (points[i] === min && !used)
+			return true;
+	}
+
+	used = false;
+	for (let i=0; i<points.length; i++) {
+		if (points[i] === max && i !== r_idx)
+			used = true;
+		else if (points[i] === max && !used)
+			return true;
+	}
+
+	return false;
 }

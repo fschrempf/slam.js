@@ -155,7 +155,7 @@ function assignSlot(a, r, s) {
 		return;
 
 	if (a["round" + r.id] === undefined)
-		a["round" + r.id] = { slot: s, points: [], score: 0};
+		a["round" + r.id] = { slot: s, points: []};
 
 	a["round" + r.id].slot = s;
 	jsonRequest("PUT", resArtists, a);
@@ -192,13 +192,20 @@ function getNextSlot(r) {
 
 function addPoints(a, r, p) {
 	a["round" + r.id].points.push(p);
-	a["round" + r.id].score += p;
 	jsonRequest("PUT", resArtists, a);
 }
 
 function removePoints(a, r, i) {
-	a["round" + r.id].score -= a["round" + r.id].points[i];
 	a["round" + r.id].points.splice(i, 1);
+	jsonRequest("PUT", resArtists, a);
+}
+
+function toggleCrossed(a, r) {
+	if (a["round" + r.id].crossed === undefined)
+		a["round" + r.id].crossed = true;
+	else
+		a["round" + r.id].crossed = !a["round" + r.id].crossed;
+
 	jsonRequest("PUT", resArtists, a);
 }
 
@@ -440,7 +447,7 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 
 	rowRenderer: function(item) {
 		var slot = item["round" + slotRoundSelected].slot;
-		var score = item["round" + slotRoundSelected].score;
+		var score = slamlib_getScore(item, rounds[slotRoundSelected - 1].id);
 		var points = item["round" + slotRoundSelected].points;
 		var $scoreRow = $("<tr>").addClass("expandable");
 		var $row = $("<tr>").addClass("jsgrid-row").click(function() {
@@ -471,9 +478,28 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 				});
 			}));
 		}
+		let crossed = "'>"
+		if (item["round" + slotRoundSelected].crossed)
+			crossed = " active' aria-pressed='false'>";
+		$scoreTop.append($("<button type='button' data-toggle='button' class='crossRatings btn btn-primary" + crossed)
+			.text("Cross highest and lowest")
+			.click(function(e) {
+				if (busy)
+					return;
+
+				busy = true;
+				toggleCrossed(item, rounds[slotRoundSelected - 1]);
+				$("#ratingGrid").jsGrid("loadData").done(function() {
+					$("#ratingGrid").jsGrid("sort", { field: 0, order: "asc" });
+					busy = false;
+				});
+		}));
 		var $scoreBottom = $("<div>").addClass("score-edit").addClass("score-edit-bottom");
 		for (var i=0; i<points.length; i++) {
-			$scoreBottom.append($("<span>").addClass("score-edit-value").append(points[i]).click(function() {
+			let crossed = ""
+			if (slamlib_isRatingCrossed(item, rounds[slotRoundSelected - 1].id, i))
+				crossed = " crossed";
+			$scoreBottom.append($("<span>").addClass("score-edit-value" + crossed).append(points[i]).click(function() {
 				if (busy)
 					return;
 
@@ -494,9 +520,9 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 	},
 
 	fields: [
-		{ name: "round" + slotRoundSelected + ".slot", title: "Slot", type: "number", width: 150 },
-		{ name: "name", title: "Assigned", type: "text", width: 150 },
-		{ name: "round" + slotRoundSelected + ".score", title: "Score", type: "number", width: 150 }
+		{ title: "Slot", type: "number", width: 150 },
+		{ title: "Assigned", type: "text", width: 150 },
+		{ title: "Score", type: "number", width: 150}
 	]
 });
 
