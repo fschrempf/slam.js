@@ -130,11 +130,9 @@ function slamlib_update(res, data, root) {
 				// Fill sub slides for each artist
 				let points = a["round" + r.id].points;
 				let score = a["round" + r.id].score;
-				score = score ? score:0;
 				let slide = $(artistslides).find(".slot" + slot);
 				$(slide).find(".name").html(a.name);
-				if (score > 0)
-					$(slide).find(".score").html(score);
+				$(slide).find(".score").html(score ? score:'');
 				$(slide).find(".points").html("");
 				for (let i=0; i<points.length; i++) {
 					$(slide).find(".points").append("<span>" +
@@ -144,7 +142,7 @@ function slamlib_update(res, data, root) {
 				// Fill vote results
 				let chartentry = $(votechart).find(".slot" + slot);
 				$(chartentry).find(".name").html(a.name);
-				$(chartentry).find(".score").html(score);
+				$(chartentry).find(".score").html(score ? score:0);
 				$(chartentry).find(".bar").width(score / 70 * 75 + "%");
 			}
 		});
