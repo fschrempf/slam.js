@@ -133,7 +133,8 @@ function slamlib_update(res, data, root) {
 				score = score ? score:0;
 				let slide = $(artistslides).find(".slot" + slot);
 				$(slide).find(".name").html(a.name);
-				$(slide).find(".score").html(score);
+				if (score > 0)
+					$(slide).find(".score").html(score);
 				$(slide).find(".points").html("");
 				for (let i=0; i<points.length; i++) {
 					$(slide).find(".points").append("<span>" +
