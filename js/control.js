@@ -257,7 +257,10 @@ var roundGrid = $("#roundGrid").jsGrid({
 					$.each(data, function(index, r) {
 						$('#slam-round-dropdown').append("<option value=" + r.id + ">" + r.name + "</option>");
 					});
-					$('#slam-round-dropdown').val(rounds[slotRoundSelected - 1].id);
+					if (rounds[slotRoundSelected - 1]) {
+						$('#slam-round-dropdown').val(rounds[slotRoundSelected - 1].id);
+						$('#slam-round-dropdown').trigger('change');
+					}
 					return data;
 				});
 		},
