@@ -177,7 +177,7 @@ function slamlib_filterArtistsByRoundInv(artists, r_id) {
 }
 
 /**
- * Filters a list of artists to return the ones assigned to a given level
+ * Filters a list of artists to return the ones not assigned to a given level
  * (group of rounds)
  *
  * artists: List of artists
@@ -243,21 +243,21 @@ function slamlib_isRatingCrossed(a, r_id, r_idx) {
 			max = points[i];
 	}
 
-	let used = false;
-	for (let i=0; i<points.length; i++) {
-		if (points[i] === min && i !== r_idx)
-			used = true;
-		else if (points[i] === min && !used)
-			return true;
+	let usedMin = false;
+	let usedMax = false;
+
+	for (let i=0; i<r_idx; i++) {
+		if (!usedMin && points[i] === min)
+			usedMin = true;
+		else if (!usedMax && points[i] === max)
+			usedMax = true;
 	}
 
-	used = false;
-	for (let i=0; i<points.length; i++) {
-		if (points[i] === max && i !== r_idx)
-			used = true;
-		else if (points[i] === max && !used)
-			return true;
-	}
+	if (!usedMin && points[r_idx] === min)
+		return true;
+
+	if (!usedMax && points[r_idx] === max)
+		return true;
 
 	return false;
 }
