@@ -60,9 +60,6 @@ function handleStateMessage(data) {
 	upcomingSlide.contentWindow.postMessage(JSON.stringify({ method: 'next' }), '*');
 }
 
-// Limit to max one state update per X ms
-handleStateMessage = debounce(handleStateMessage, 200);
-
 /**
  * Forward keyboard events to the current slide window.
  * This enables keyboard events to work even if focus
@@ -581,32 +578,5 @@ function getLayout() {
 	// Default to the first record in the layouts hash
 	for(var id in SLAM_LAYOUTS) {
 		return id;
-	}
-}
-
-/**
- * Limits the frequency at which a function can be called.
- */
-function debounce(fn, ms) {
-	var lastTime = 0,
-		timeout;
-
-	return function() {
-		var args = arguments;
-		var context = this;
-
-		clearTimeout(timeout);
-
-		var timeSinceLastCall = Date.now() - lastTime;
-		if(timeSinceLastCall > ms) {
-			fn.apply( context, args );
-			lastTime = Date.now();
-		}
-		else {
-			timeout = setTimeout(function() {
-				fn.apply(context, args);
-				lastTime = Date.now();
-			}, ms - timeSinceLastCall);
-		}
 	}
 }
