@@ -294,15 +294,19 @@ var roundGrid = $("#roundGrid").jsGrid({
 
 $('#slam-round-dropdown').change(function() {
 	selectedRound = rounds[this.selectedIndex];
-	// Reassign the field data source ("name") for the slot values
-	$("#slotRoundGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
-	$("#ratingGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
+
 	$("#slotRoundGrid").jsGrid("loadData").done(function() {
+		// Reassign the field data source ("name") for the slot values
+		$("#slotRoundGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
 		$("#slotRoundGrid").jsGrid("sort", { field: 0, order: "asc" });
 	});
+
 	$("#ratingGrid").jsGrid("loadData").done(function() {
+		// Reassign the field data source ("name") for the slot values
+		$("#ratingGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
 		$("#ratingGrid").jsGrid("sort", { field: 0, order: "asc" });
 	});
+
 	$("#slotArtistGrid").jsGrid("loadData");
 	$('.addRoundButton').text("Assign to " + selectedRound.name);
 	$('.removeRoundButton').text("Remove from " + selectedRound.name);
