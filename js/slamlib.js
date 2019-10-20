@@ -172,7 +172,7 @@ function slamlib_filterArtistsByRound(artists, round) {
  */
 function slamlib_filterArtistsByRoundInv(artists, round) {
 	return $.grep(artists, function(a, i) {
-		return !isArtistInRound(a, r.id);
+		return !isArtistInRound(a, round.id);
 	});
 }
 
