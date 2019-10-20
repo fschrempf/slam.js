@@ -294,7 +294,9 @@ var roundGrid = $("#roundGrid").jsGrid({
 
 $('#slam-round-dropdown').change(function() {
 	selectedRound = rounds[this.selectedIndex];
+	// Reassign the field data source ("name") for the slot values
 	$("#slotRoundGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
+	$("#ratingGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
 	$("#slotRoundGrid").jsGrid("loadData").done(function() {
 		$("#slotRoundGrid").jsGrid("sort", { field: 0, order: "asc" });
 	});
@@ -326,7 +328,7 @@ var slotRoundGrid = $("#slotRoundGrid").jsGrid({
 	},
 
 	fields: [
-		{ name: "round" + selectedRound.id + ".slot", title: "Slot", type: "number", width: 150 },
+		{ name: "round" + selectedRound.id + ".slot", title: "Slot", type: "number", width: 150, align: "left" },
 		{ name: "name", title: "Assigned", type: "text", width: 150 },
 		{ type: "control", width: 100, editButton: false, deleteButton: false,
 			itemTemplate: function(value, item) {
@@ -520,9 +522,9 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 	},
 
 	fields: [
-		{ title: "Slot", type: "number", width: 150 },
-		{ title: "Assigned", type: "text", width: 150 },
-		{ title: "Score", type: "number", width: 150}
+		{ name: "round" + selectedRound.id + ".slot", title: "Slot", type: "number", width: 150 },
+		{ name: "name", title: "Assigned", type: "text", width: 150 },
+		{ name: "score", title: "Score", type: "number", width: 150}
 	]
 });
 
