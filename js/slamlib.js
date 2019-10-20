@@ -156,11 +156,11 @@ function slamlib_update(res, data, root) {
  * Filters a list of artists to return the ones assigned to a given round
  *
  * artists: List of artists
- * r_id:    ID of the round to filter for
+ * round:   Round to filter for
  */
-function slamlib_filterArtistsByRound(artists, r_id) {
+function slamlib_filterArtistsByRound(artists, round) {
 	return $.grep(artists, function(a, i) {
-		return isArtistInRound(a, r_id);
+		return isArtistInRound(a, round.id);
 	});
 }
 
@@ -168,11 +168,11 @@ function slamlib_filterArtistsByRound(artists, r_id) {
  * Filters a list of artists to return the ones not assigned to a given round
  *
  * artists: List of artists
- * r_id:    ID of the round to filter for
+ * round:   Round to filter for
  */
-function slamlib_filterArtistsByRoundInv(artists, r_id) {
+function slamlib_filterArtistsByRoundInv(artists, round) {
 	return $.grep(artists, function(a, i) {
-		return !isArtistInRound(a, r_id);
+		return !isArtistInRound(a, r.id);
 	});
 }
 

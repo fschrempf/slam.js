@@ -1,7 +1,7 @@
 var currentState,
 	currentSlide,
 	upcomingSlide,
-	slotRoundSelected = 1,
+	selectedRound = {},
 	connected = false;
 
 var SLAM_LAYOUTS = {
@@ -264,10 +264,10 @@ var roundGrid = $("#roundGrid").jsGrid({
 					$.each(data, function(index, r) {
 						$('#slam-round-dropdown').append("<option value=" + r.id + ">" + r.name + "</option>");
 					});
-					if (rounds[slotRoundSelected - 1]) {
-						$('#slam-round-dropdown').val(rounds[slotRoundSelected - 1].id);
-						$('#slam-round-dropdown').trigger('change');
-					}
+					if (!selectedRound)
+						selectedRound = rounds[0];
+					$('#slam-round-dropdown').val(selectedRound.id);
+					$('#slam-round-dropdown').trigger('change');
 					return data;
 				});
 		},
@@ -293,8 +293,8 @@ var roundGrid = $("#roundGrid").jsGrid({
 });
 
 $('#slam-round-dropdown').change(function() {
-	slotRoundSelected = this.value;
-	$("#slotRoundGrid").jsGrid("fieldOption", 0, "name", "round" + slotRoundSelected + ".slot");
+	selectedRound = rounds[this.selectedIndex];
+	$("#slotRoundGrid").jsGrid("fieldOption", 0, "name", "round" + selectedRound.id + ".slot");
 	$("#slotRoundGrid").jsGrid("loadData").done(function() {
 		$("#slotRoundGrid").jsGrid("sort", { field: 0, order: "asc" });
 	});
@@ -302,8 +302,8 @@ $('#slam-round-dropdown').change(function() {
 		$("#ratingGrid").jsGrid("sort", { field: 0, order: "asc" });
 	});
 	$("#slotArtistGrid").jsGrid("loadData");
-	$('.addRoundButton').text("Assign to " + rounds[slotRoundSelected - 1].name);
-	$('.removeRoundButton').text("Remove from " + rounds[slotRoundSelected - 1].name);
+	$('.addRoundButton').text("Assign to " + selectedRound.name);
+	$('.removeRoundButton').text("Remove from " + selectedRound.name);
 });
 
 var slotRoundGrid = $("#slotRoundGrid").jsGrid({
@@ -320,33 +320,33 @@ var slotRoundGrid = $("#slotRoundGrid").jsGrid({
 	controller: {
 		loadData: function(filter) {
 			return slamlib_getRes(resArtists, function(data) {
-				return slamlib_filterArtistsByRound(data, slotRoundSelected);
+				return slamlib_filterArtistsByRound(data, selectedRound);
 			});
 		}
 	},
 
 	fields: [
-		{ name: "round" + slotRoundSelected + ".slot", title: "Slot", type: "number", width: 150 },
+		{ name: "round" + selectedRound.id + ".slot", title: "Slot", type: "number", width: 150 },
 		{ name: "name", title: "Assigned", type: "text", width: 150 },
 		{ type: "control", width: 100, editButton: false, deleteButton: false,
 			itemTemplate: function(value, item) {
 				var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
 
 				var $customButton = $("<button type='button' class='removeRoundButton btn btn-warning'>")
-					.text("Remove from " + rounds[slotRoundSelected - 1].name)
+					.text("Remove from " + selectedRound.name)
 					.click(function(e) {
 						if (busy)
 							return;
 
 						busy = true;
-						unassignSlot(item, rounds[slotRoundSelected - 1]);
+						unassignSlot(item, selectedRound);
 						$("#slotRoundGrid").jsGrid("deleteItem", item);
 						var $gridData = $("#slotRoundGrid .jsgrid-grid-body tbody");
 						var slot = 1;
 						// reassign remaining items
 						var items = $.map($gridData.find("tr"), function(row) {
 							var item = $(row).data("JSGridItem");
-							assignSlot(item, rounds[slotRoundSelected - 1], slot++);
+							assignSlot(item, selectedRound, slot++);
 							return item;
 						});
 						$("#slotRoundGrid").jsGrid("loadData").done(function() {
@@ -376,7 +376,7 @@ var slotRoundGrid = $("#slotRoundGrid").jsGrid({
 				// arrays of items
 				var items = $.map($gridData.find("tr"), function(row) {
 					var item = $(row).data("JSGridItem");
-					assignSlot(item, rounds[slotRoundSelected - 1], slot++);
+					assignSlot(item, selectedRound, slot++);
 					return item;
 				});
 			}
@@ -396,7 +396,7 @@ var slotArtistGrid = $("#slotArtistGrid").jsGrid({
 	controller: {
 		loadData: function(filter) {
 			return slamlib_getRes(resArtists, function(data) {
-				return slamlib_filterArtistsByLevelInv(data, rounds[slotRoundSelected - 1].level);
+				return slamlib_filterArtistsByLevelInv(data, selectedRound.level);
 			});
 		}
 	},
@@ -408,13 +408,13 @@ var slotArtistGrid = $("#slotArtistGrid").jsGrid({
 				var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
 
 				var $customButton = $("<button type='button' class='addRoundButton btn btn-success'>")
-					.text("Assign to " + rounds[slotRoundSelected - 1].name)
+					.text("Assign to " + selectedRound.name)
 					.click(function(e) {
 						if (busy)
 							return;
 
 						busy = true;
-						assignSlot(item, rounds[slotRoundSelected - 1], getNextSlot(rounds[slotRoundSelected - 1]));
+						assignSlot(item, selectedRound, getNextSlot(selectedRound));
 						$("#slotArtistGrid").jsGrid("loadData").done(function() {
 							busy = false;
 						});
@@ -440,15 +440,15 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 	controller: {
 		loadData: function(filter) {
 			return slamlib_getRes(resArtists, function(data) {
-				return slamlib_filterArtistsByRound(data, slotRoundSelected);
+				return slamlib_filterArtistsByRound(data, selectedRound);
 			});
 		}
 	},
 
 	rowRenderer: function(item) {
-		var slot = item["round" + slotRoundSelected].slot;
-		var score = slamlib_getScore(item, rounds[slotRoundSelected - 1].id);
-		var points = item["round" + slotRoundSelected].points;
+		var slot = item["round" + selectedRound.id].slot;
+		var score = slamlib_getScore(item, selectedRound.id);
+		var points = item["round" + selectedRound.id].points;
 		var $scoreRow = $("<tr>").addClass("expandable");
 		var $row = $("<tr>").addClass("jsgrid-row").click(function() {
 			if ($scoreRow.hasClass("expanded")) {
@@ -471,7 +471,7 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 					return;
 
 				busy = true;
-				addPoints(item, rounds[slotRoundSelected - 1], Number(this.innerHTML));
+				addPoints(item, selectedRound, Number(this.innerHTML));
 				$("#ratingGrid").jsGrid("loadData").done(function() {
 					$("#ratingGrid").jsGrid("sort", { field: 0, order: "asc" });
 					busy = false;
@@ -479,7 +479,7 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 			}));
 		}
 		let crossed = "'>"
-		if (item["round" + slotRoundSelected].crossed)
+		if (item["round" + selectedRound.id].crossed)
 			crossed = " active' aria-pressed='false'>";
 		$scoreTop.append($("<button type='button' data-toggle='button' class='crossRatings btn btn-primary" + crossed)
 			.text("Cross highest and lowest")
@@ -488,7 +488,7 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 					return;
 
 				busy = true;
-				toggleCrossed(item, rounds[slotRoundSelected - 1]);
+				toggleCrossed(item, selectedRound);
 				$("#ratingGrid").jsGrid("loadData").done(function() {
 					$("#ratingGrid").jsGrid("sort", { field: 0, order: "asc" });
 					busy = false;
@@ -497,14 +497,14 @@ var ratingGrid = $("#ratingGrid").jsGrid({
 		var $scoreBottom = $("<div>").addClass("score-edit").addClass("score-edit-bottom");
 		for (var i=0; i<points.length; i++) {
 			let crossed = ""
-			if (slamlib_isRatingCrossed(item, rounds[slotRoundSelected - 1].id, i))
+			if (slamlib_isRatingCrossed(item, selectedRound.id, i))
 				crossed = " crossed";
 			$scoreBottom.append($("<span>").addClass("score-edit-value" + crossed).append(points[i]).click(function() {
 				if (busy)
 					return;
 
 				busy = true;
-				removePoints(item, rounds[slotRoundSelected - 1], $(this).index());
+				removePoints(item, selectedRound, $(this).index());
 				$("#ratingGrid").jsGrid("loadData").done(function() {
 					$("#ratingGrid").jsGrid("sort", { field: 0, order: "asc" });
 					busy = false;
