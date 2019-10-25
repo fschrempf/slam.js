@@ -26,10 +26,7 @@ socket.on('statechanged', function(data) {
 setupLayout();
 setupIframes();
 
-// Once the iframes have loaded, emit a signal saying there's
-// a new subscriber which will trigger a 'statechanged'
-// message to be sent back
-window.addEventListener('message', function(event) {
+function handleControlEvent(event) {
 	var data = JSON.parse(event.data);
 
 	if(data && data.namespace === 'reveal') {
@@ -46,7 +43,12 @@ window.addEventListener('message', function(event) {
 			upcomingSlide.contentWindow.postMessage(JSON.stringify({ method: 'next' }), '*');
 		}
 	}
-});
+}
+
+// Once the iframes have loaded, emit a signal saying there's
+// a new subscriber which will trigger a 'statechanged'
+// message to be sent back
+window.addEventListener('message', handleControlEvent);
 
 /**
  * Called when the main window sends an updated state.
@@ -56,10 +58,12 @@ function handleStateMessage(data) {
 	// applying the same state
 	currentState = JSON.stringify(data.state);
 
-	// Update the control slides
+	// Update the control slides, prevent message loops by temporarily disabling the listener
+	window.removeEventListener('message', handleControlEvent);
 	currentSlide.contentWindow.postMessage(JSON.stringify({ method: 'setState', args: [ data.state ] }), '*');
 	upcomingSlide.contentWindow.postMessage(JSON.stringify({ method: 'setState', args: [ data.state ] }), '*');
 	upcomingSlide.contentWindow.postMessage(JSON.stringify({ method: 'next' }), '*');
+	window.addEventListener('message', handleControlEvent);
 }
 
 // Limit to max one state update per X ms
