@@ -30,6 +30,26 @@
 		});
 	}
 
+	function subscribeListeners() {
+		Reveal.addEventListener('slidechanged', post);
+		Reveal.addEventListener('fragmentshown', post);
+		Reveal.addEventListener('fragmenthidden', post);
+		Reveal.addEventListener('overviewhidden', post);
+		Reveal.addEventListener('overviewshown', post);
+		Reveal.addEventListener('paused', post);
+		Reveal.addEventListener('resumed', post);
+	}
+
+	function unsubscribeListeners() {
+		Reveal.removeEventListener('slidechanged', post);
+		Reveal.removeEventListener('fragmentshown', post);
+		Reveal.removeEventListener('fragmenthidden', post);
+		Reveal.removeEventListener('overviewhidden', post);
+		Reveal.removeEventListener('overviewshown', post);
+		Reveal.removeEventListener('paused', post);
+		Reveal.removeEventListener('resumed', post);
+	}
+
 	// Initialize content from database
 	updateData(resRounds);
 	updateData(resArtists);
@@ -41,7 +61,10 @@
 
 	// When the state changes from inside of the control panel
 	socket.on('statechanged-control', function(data) {
-		Reveal.setState( data.state );
+		// Prevent message loops by temporarily disabling the listeners
+		unsubscribeListeners();
+		Reveal.setState(data.state);
+		subscribeListeners();
 	} );
 
 	// When some data was changed in the control panel
@@ -50,13 +73,7 @@
 	} );
 
 	// Monitor events that trigger a change in state
-	Reveal.addEventListener('slidechanged', post);
-	Reveal.addEventListener('fragmentshown', post);
-	Reveal.addEventListener('fragmenthidden', post);
-	Reveal.addEventListener('overviewhidden', post);
-	Reveal.addEventListener('overviewshown', post);
-	Reveal.addEventListener('paused', post);
-	Reveal.addEventListener('resumed', post);
+	subscribeListeners();
 
 	// Post the initial state
 	post();

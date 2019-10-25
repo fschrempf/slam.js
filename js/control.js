@@ -42,6 +42,8 @@ window.addEventListener('message', function(event) {
 	if(data && data.namespace === 'reveal') {
 		if(/slidechanged|fragmentshown|fragmenthidden|overviewshown|overviewhidden|paused|resumed/.test(data.eventName) && currentState !== JSON.stringify(data.state)) {
 			socket.emit('statechanged-control', { state: data.state });
+			upcomingSlide.contentWindow.postMessage(JSON.stringify({ method: 'setState', args: [ data.state ] }), '*');
+			upcomingSlide.contentWindow.postMessage(JSON.stringify({ method: 'next' }), '*');
 		}
 	}
 });
