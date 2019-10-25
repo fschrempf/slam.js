@@ -137,7 +137,8 @@ function slamlib_update(res, data, root) {
 				for (let i=0; i<points.length; i++) {
 					let crossed = ">"
 					if (slamlib_isRatingCrossed(a, r.id, i))
-						crossed = " class='crossed'>";
+						crossed = " class='crossed'>	\
+										<div class='crossedCard'>X</div>";
 					$(slide).find(".points").append("<span" + crossed +
 														points[i] +
 													"</span>");
@@ -145,7 +146,7 @@ function slamlib_update(res, data, root) {
 				// Fill vote results
 				let chartentry = $(votechart).find(".slot" + slot);
 				$(chartentry).find(".name").html(a.name);
-				$(chartentry).find(".score").html(score ? score:0);
+				$(chartentry).find(".score").html(score ? score:'');
 				$(chartentry).find(".bar").width(score / 70 * 75 + "%");
 			}
 		});
