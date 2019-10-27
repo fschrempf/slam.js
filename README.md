@@ -91,11 +91,11 @@ on 26 October 2019.
 If you happen to use slam.js for an event, please let me know or send a PR to
 extend the list below.
 
-* 1\. Esslinger Preacher Slam (early unpublished version)
+* __1\. Esslinger Preacher Slam__ (early unpublished version)
   * [Video (German)](https://kirchenfernsehen.de/video/erster-esslinger-preacher-slam/)
   * Repository with ported slides (not the version actually used): https://github.com/fri-sch/ps-es-2018-slides
-* 2\. Esslinger Preacher Slam
-  * Repoitory with slides: https://github.com/fri-sch/ps-es-2019-slides
+* __2\. Esslinger Preacher Slam__
+  * Repository with slides: https://github.com/fri-sch/ps-es-2019-slides
 
 ## License
 
