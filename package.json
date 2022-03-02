@@ -17,7 +17,7 @@
     "jsgrid": "git+https://github.com/fri-sch/jsgrid.git#b2c0d6fd39c3fa1999c9bddcab3dba3259972152",
     "lowdb-api": "git+https://github.com/fri-sch/lowdb-api.git#869c1019ef4d7433501ebc6429559cf5e57e360d",
     "mustache": "^3.0.3",
-    "reveal.js": "^3.9.2",
+    "reveal.js": "^4.3.0",
     "socket.io": "^2.4.0"
   }
 }
