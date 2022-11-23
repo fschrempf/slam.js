@@ -18,6 +18,6 @@
     "lowdb-api": "git+https://github.com/fri-sch/lowdb-api.git#869c1019ef4d7433501ebc6429559cf5e57e360d",
     "mustache": "^3.0.3",
     "reveal.js": "^3.9.2",
-    "socket.io": "^2.4.0"
+    "socket.io": "^2.5.0"
   }
 }
